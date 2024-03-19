@@ -1,0 +1,4 @@
+version: "1.0"
+services:
+  exercise01:
+    image: parince/ebusiness-app:latest
