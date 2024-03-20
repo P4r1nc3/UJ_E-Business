@@ -9,23 +9,23 @@ GET     /                           controllers.HomeController.index()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-# Product
-POST    /product           controllers.ProductController.create()
-GET     /product           controllers.ProductController.list()
-GET     /product/:id       controllers.ProductController.get(id: Long)
-PUT     /product/:id       controllers.ProductController.update(id: Long)
-DELETE  /product/:id       controllers.ProductController.delete(id: Long)
+# Products
+POST    /products          controllers.ProductController.create()
+GET     /products          controllers.ProductController.list()
+GET     /products/:id      controllers.ProductController.get(id: Long)
+PUT     /products/:id      controllers.ProductController.update(id: Long)
+DELETE  /products/:id      controllers.ProductController.delete(id: Long)
 
-# Category
-POST    /category          controllers.CategoryController.create()
-GET     /category          controllers.CategoryController.list()
-GET     /category/:id      controllers.CategoryController.get(id: Long)
-PUT     /category/:id      controllers.CategoryController.update(id: Long)
-DELETE  /category/:id      controllers.CategoryController.delete(id: Long)
+# Categories
+#POST    /categories        controllers.CategoryController.create()
+#GET     /categories        controllers.CategoryController.list()
+#GET     /categories/:id    controllers.CategoryController.get(id: Long)
+#PUT     /categories/:id    controllers.CategoryController.update(id: Long)
+#DELETE  /categories/:id    controllers.CategoryController.delete(id: Long)
 
-# Cart
-POST    /cart              controllers.CartController.create()
-GET     /cart              controllers.CartController.list()
-GET     /cart/:id          controllers.CartController.get(id: Long)
-PUT     /cart/:id          controllers.CartController.update(id: Long)
-DELETE  /cart/:id          controllers.CartController.delete(id: Long)
+# Carts
+#POST    /carts             controllers.CartController.create()
+#GET     /carts             controllers.CartController.list()
+#GET     /carts/:id         controllers.CartController.get(id: Long)
+#PUT     /carts/:id         controllers.CartController.update(id: Long)
+#DELETE  /carts/:id         controllers.CartController.delete(id: Long)
