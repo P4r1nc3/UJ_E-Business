@@ -56,7 +56,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
     products.indexWhere(_.id == id) match {
       case idx if idx != -1 =>
         products.remove(idx)
-        Ok(s"Product with id $id deleted.")
+        NoContent
       case _ => NotFound
     }
   }
