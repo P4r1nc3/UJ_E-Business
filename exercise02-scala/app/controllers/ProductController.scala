@@ -26,9 +26,11 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   def create(): Action[AnyContent] = Action { request =>
     request.body.asJson match {
       case Some(json) =>
-        val name = (json \ "name").as[String]
         val categoryId = (json \ "categoryId").as[Long]
-        val newProduct = Product(id = nextId, name = name, categoryId = categoryId)
+        val name = (json \ "name").as[String]
+        val description = (json \ "description").as[String]
+        val price = (json \ "price").as[BigDecimal]
+        val newProduct = Product(id = nextId, categoryId = categoryId, name = name, description = description, price = price)
         products += newProduct
         nextId += 1
         Created(Json.toJson(newProduct))
@@ -39,11 +41,20 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   def update(id: Long): Action[AnyContent] = Action { request =>
     request.body.asJson match {
       case Some(json) =>
-        val name = (json \ "name").as[String]
-        val categoryId = (json \ "categoryId").as[Long]
+        val categoryIdOpt = (json \ "categoryId").asOpt[Long]
+        val nameOpt = (json \ "name").asOpt[String]
+        val descriptionOpt = (json \ "description").asOpt[String]
+        val priceOpt = (json \ "price").asOpt[BigDecimal]
+
         products.indexWhere(_.id == id) match {
           case idx if idx != -1 =>
-            val updatedProduct = products(idx).copy(name = name, categoryId = categoryId)
+            val productToUpdate = products(idx)
+            val updatedProduct = productToUpdate.copy(
+              categoryId = categoryIdOpt.getOrElse(productToUpdate.categoryId),
+              name = nameOpt.getOrElse(productToUpdate.name),
+              description = descriptionOpt.getOrElse(productToUpdate.description),
+              price = priceOpt.getOrElse(productToUpdate.price)
+            )
             products.update(idx, updatedProduct)
             Ok(Json.toJson(updatedProduct))
           case _ => NotFound
