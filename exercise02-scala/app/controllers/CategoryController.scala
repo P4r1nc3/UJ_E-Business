@@ -6,10 +6,14 @@ import models.Category
 import scala.collection.mutable.ListBuffer
 import play.api.libs.json.{Json, OFormat}
 
+object CategoryController {
+  val categories = ListBuffer[Category]()
+}
+
 @Singleton
 class CategoryController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
-  private val categories = ListBuffer[Category]()
-  private var nextId: Long = 1
+  import CategoryController.categories
+
   implicit val categoryFormat: OFormat[Category] = Json.format[Category]
 
   def list(): Action[AnyContent] = Action {
@@ -27,9 +31,9 @@ class CategoryController @Inject()(cc: ControllerComponents) extends AbstractCon
     request.body.asJson match {
       case Some(json) =>
         val name = (json \ "name").as[String]
-        val newCategory = Category(id = nextId, name = name)
+        val newId = if (categories.nonEmpty) categories.map(_.id).max + 1 else 1
+        val newCategory = Category(id = newId, name = name)
         categories += newCategory
-        nextId += 1
         Created(Json.toJson(newCategory))
       case None => BadRequest("Invalid category data")
     }
@@ -39,13 +43,9 @@ class CategoryController @Inject()(cc: ControllerComponents) extends AbstractCon
     request.body.asJson match {
       case Some(json) =>
         val nameOpt = (json \ "name").asOpt[String]
-
         categories.indexWhere(_.id == id) match {
           case idx if idx != -1 =>
-            val categoryToUpdate = categories(idx)
-            val updatedCategory = categoryToUpdate.copy(
-              name = nameOpt.getOrElse(categoryToUpdate.name)
-            )
+            val updatedCategory = categories(idx).copy(name = nameOpt.getOrElse(categories(idx).name))
             categories.update(idx, updatedCategory)
             Ok(Json.toJson(updatedCategory))
           case _ => NotFound
