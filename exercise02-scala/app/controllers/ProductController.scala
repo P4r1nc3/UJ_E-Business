@@ -12,7 +12,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   implicit val productFormat: OFormat[Product] = Json.format[Product]
 
   def list(): Action[AnyContent] = Action {
-    if (products.isEmpty) NoContent else Ok(Json.toJson(products))
+    Ok(Json.toJson(products))
   }
 
   def get(id: Long): Action[AnyContent] = Action {
