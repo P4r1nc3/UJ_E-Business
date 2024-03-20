@@ -3,12 +3,17 @@ package controllers
 import javax.inject._
 import play.api.mvc._
 import models.Product
+
 import scala.collection.mutable.ListBuffer
 import play.api.libs.json.{Json, OFormat}
 
+object ProductController {
+  val products = ListBuffer[Product]()
+}
+
 @Singleton
 class ProductController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
-  private val products = ListBuffer[Product]()
+  import ProductController.products
   private var nextId: Long = 1
   implicit val productFormat: OFormat[Product] = Json.format[Product]
 
