@@ -17,11 +17,11 @@ PUT     /products/:id      controllers.ProductController.update(id: Long)
 DELETE  /products/:id      controllers.ProductController.delete(id: Long)
 
 # Categories
-#POST    /categories        controllers.CategoryController.create()
-#GET     /categories        controllers.CategoryController.list()
-#GET     /categories/:id    controllers.CategoryController.get(id: Long)
-#PUT     /categories/:id    controllers.CategoryController.update(id: Long)
-#DELETE  /categories/:id    controllers.CategoryController.delete(id: Long)
+POST    /categories        controllers.CategoryController.create()
+GET     /categories        controllers.CategoryController.list()
+GET     /categories/:id    controllers.CategoryController.get(id: Long)
+PUT     /categories/:id    controllers.CategoryController.update(id: Long)
+DELETE  /categories/:id    controllers.CategoryController.delete(id: Long)
 
 # Carts
 #POST    /carts             controllers.CartController.create()
