@@ -1,0 +1,12 @@
+version: "1.0"
+services:
+  exercise02:
+    image: parince/ebusiness-app-2:latest
+    ports:
+      - 9000:9000
+
+  ngrok:
+    image: ngrok/ngrok
+    ports:
+      - "4040:4040"
+    command: [ "http", "exercise02:9000" ]
