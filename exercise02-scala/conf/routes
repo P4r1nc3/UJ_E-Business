@@ -24,8 +24,8 @@ PUT     /categories/:id    controllers.CategoryController.update(id: Long)
 DELETE  /categories/:id    controllers.CategoryController.delete(id: Long)
 
 # Carts
-#POST    /carts             controllers.CartController.create()
-#GET     /carts             controllers.CartController.list()
-#GET     /carts/:id         controllers.CartController.get(id: Long)
-#PUT     /carts/:id         controllers.CartController.update(id: Long)
-#DELETE  /carts/:id         controllers.CartController.delete(id: Long)
+POST    /carts             controllers.CartController.create()
+GET     /carts             controllers.CartController.list()
+GET     /carts/:id         controllers.CartController.get(id: Long)
+PUT     /carts/:id         controllers.CartController.update(id: Long)
+DELETE  /carts/:id         controllers.CartController.delete(id: Long)
