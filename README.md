@@ -14,3 +14,18 @@
 
 
 Code:  [Link to pull request](https://github.com/P4r1nc3/UJ_E-Business/pull/1)
+
+**Exercise 2** Scala
+
+:white_check_mark: 3.0 requirement 1
+
+:white_check_mark: 3.5 requirement 2
+
+:white_check_mark: 4.0 requirement 3
+
+:white_check_mark: 4.5 requirement 4
+
+:white_check_mark: 5.0 requirement 5
+
+
+Code:  [Link to pull request](https://github.com/P4r1nc3/UJ_E-Business/pull/2)
