@@ -9,4 +9,6 @@ services:
     image: ngrok/ngrok
     ports:
       - "4040:4040"
+    environment:
+      - NGROK_AUTHTOKEN=${{ secrets.NGROK_TOKEN }}
     command: [ "http", "exercise02:9000" ]
