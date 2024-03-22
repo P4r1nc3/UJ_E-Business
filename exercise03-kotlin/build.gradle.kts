@@ -39,6 +39,13 @@ dependencies {
     // Arrow
     implementation("io.arrow-kt:arrow-core:1.0.1")
 
+    // Discord4J
+    implementation ("com.discord4j:discord4j-core:3.2.0")
+
+    // Slack API (java-slack-sdk)
+    implementation ("com.slack.api:slack-api-client:1.8.1")
+    implementation ("com.slack.api:slack-api-model:1.8.1")
+
     // Tests
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
