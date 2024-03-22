@@ -24,8 +24,22 @@ import kotlinx.serialization.json.jsonPrimitive
 @Serializable
 data class MessagePost(val message: String)
 
+@Serializable
+data class Product(val name: String, val category: String, val price: Int)
 
-val categories = listOf("cars", "phone", "books", "movies", "songs")
+val categories = listOf("cars", "phones", "books", "movies", "songs")
+val products = listOf(
+    Product("Tesla Model S", "cars", 75000),
+    Product("Ford Mustang", "cars", 35000),
+    Product("iPhone 12", "phones", 999),
+    Product("Samsung Galaxy S21", "phones", 799),
+    Product("The Lord of the Rings", "books", 30),
+    Product("1984", "books", 15),
+    Product("Inception", "movies", 20),
+    Product("The Matrix", "movies", 25),
+    Product("Bohemian Rhapsody", "songs", 2),
+    Product("Hotel California", "songs", 3)
+)
 
 fun main() {
     val discordChannelId = "1220501870766723202"
@@ -37,14 +51,20 @@ fun main() {
     // Discord
     val discordClient = DiscordClientBuilder.create(discordBotToken).build().login().block()
     discordClient?.eventDispatcher?.on(MessageCreateEvent::class.java)?.subscribe { event ->
-        if (event.message.channelId.asString() == discordChannelId) {
-            println("DISCORD: ${event.message.content}")
-        }
-        if (event.message.content == "!categories") {
+        val command = event.message.content.split(" ").firstOrNull() ?: ""
+        if (categories.any { command == "!$it" }) {
+            val categoryName = command.removePrefix("!")
+            val filteredProducts = products.filter { it.category == categoryName }
+            val productsMessage = filteredProducts.joinToString(separator = "\n") { "${it.name} - $${it.price}" }
+            event.message.channel.block()?.createMessage(productsMessage)?.block()
+        } else if (command == "!categories") {
             val categoriesMessage = categories.joinToString(separator = "\n")
             event.message.channel.block()?.createMessage(categoriesMessage)?.block()
+        } else {
+            println("DISCORD: ${event.message.content}")
         }
     }
+
 
     val server = embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) {
@@ -94,6 +114,13 @@ fun Application.module() {
                         val categoriesMessage = categories.joinToString(separator = "\n")
                         if (channelId != null) {
                             sendToSlack(client, channelId, "xoxb-6845263267716-6828282409719-oxiJDWmbk0SJvIg92KqtQyAb", categoriesMessage)
+                        }
+                    } else if (categories.any { messageText == "!$it" }) {
+                        val categoryName = messageText?.removePrefix("!")
+                        val filteredProducts = products.filter { it.category == categoryName }
+                        val productsMessage = filteredProducts.joinToString(separator = "\n") { "${it.name} - $${it.price}" }
+                        if (channelId != null) {
+                            sendToSlack(client, channelId, "xoxb-6845263267716-6828282409719-oxiJDWmbk0SJvIg92KqtQyAb", productsMessage)
                         }
                     } else {
                         println("SLACK: $messageText")
