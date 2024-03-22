@@ -24,6 +24,9 @@ import kotlinx.serialization.json.jsonPrimitive
 @Serializable
 data class MessagePost(val message: String)
 
+
+val categories = listOf("cars", "phone", "books", "movies", "songs")
+
 fun main() {
     val discordChannelId = "1220501870766723202"
     val discordBotToken = "MTE3ODQ0NjUwMDgxNzI4NTEyMA.GlutqJ.R6dNwrqYdlDP4xd1xSLNCBcs24pocN4y74NZMA"
@@ -36,6 +39,10 @@ fun main() {
     discordClient?.eventDispatcher?.on(MessageCreateEvent::class.java)?.subscribe { event ->
         if (event.message.channelId.asString() == discordChannelId) {
             println("DISCORD: ${event.message.content}")
+        }
+        if (event.message.content == "!categories") {
+            val categoriesMessage = categories.joinToString(separator = "\n")
+            event.message.channel.block()?.createMessage(categoriesMessage)?.block()
         }
     }
 
@@ -81,7 +88,16 @@ fun Application.module() {
                 val messageType = event?.get("type")?.jsonPrimitive?.content
                 if (messageType == "message") {
                     val messageText = event["text"]?.jsonPrimitive?.content
-                    println("SLACK: $messageText")
+                    val channelId = event["channel"]?.jsonPrimitive?.content
+
+                    if (messageText == "!categories") {
+                        val categoriesMessage = categories.joinToString(separator = "\n")
+                        if (channelId != null) {
+                            sendToSlack(client, channelId, "xoxb-6845263267716-6828282409719-oxiJDWmbk0SJvIg92KqtQyAb", categoriesMessage)
+                        }
+                    } else {
+                        println("SLACK: $messageText")
+                    }
                 }
             }
 
