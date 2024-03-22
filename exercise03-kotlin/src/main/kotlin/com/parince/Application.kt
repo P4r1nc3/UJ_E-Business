@@ -15,11 +15,38 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.serialization.Serializable
+import discord4j.core.DiscordClientBuilder
+import discord4j.core.event.domain.message.MessageCreateEvent
+import com.slack.api.Slack
+import com.slack.api.methods.request.chat.ChatPostMessageRequest
 
 @Serializable
 data class MessagePost(val message: String)
 
 fun main() {
+    val discordChannelId = "1220501870766723202"
+    val discordBotToken = "MTE3ODQ0NjUwMDgxNzI4NTEyMA.GlutqJ.R6dNwrqYdlDP4xd1xSLNCBcs24pocN4y74NZMA"
+
+    val slackChannelId = "C06QL4U3FKQ"
+    val slackBotToken = "xoxb-6845263267716-6828282409719-oxiJDWmbk0SJvIg92KqtQyAb"
+
+    // Discord
+    val discordClient = DiscordClientBuilder.create(discordBotToken).build().login().block()
+    discordClient?.eventDispatcher?.on(MessageCreateEvent::class.java)?.subscribe { event ->
+        if (event.message.channelId.asString() == discordChannelId) {
+            println("DISCORD: ${event.message.content}")
+        }
+    }
+
+    // Slack
+    val slack = Slack.getInstance()
+    val slackApp = slack.methods(slackBotToken)
+    slackApp.chatPostMessage(ChatPostMessageRequest.builder()
+        .channel(slackChannelId)
+        .text("Nasłuchiwanie na wiadomości rozpoczęte.")
+        .build()
+    )
+
     val server = embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) {
             json()
