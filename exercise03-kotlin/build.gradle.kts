@@ -5,6 +5,7 @@ val logback_version: String by project
 plugins {
     kotlin("jvm") version "1.7.10"
     id("io.ktor.plugin") version "2.2.4"
+    kotlin("plugin.serialization") version "1.5.31"
 }
 
 group = "com.parince"
@@ -19,7 +20,6 @@ application {
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
 dependencies {
