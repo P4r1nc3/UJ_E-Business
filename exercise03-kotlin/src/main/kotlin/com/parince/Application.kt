@@ -14,11 +14,12 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.serialization.Serializable
 import discord4j.core.DiscordClientBuilder
 import discord4j.core.event.domain.message.MessageCreateEvent
-import com.slack.api.Slack
-import com.slack.api.methods.request.chat.ChatPostMessageRequest
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 data class MessagePost(val message: String)
@@ -37,15 +38,6 @@ fun main() {
             println("DISCORD: ${event.message.content}")
         }
     }
-
-    // Slack
-    val slack = Slack.getInstance()
-    val slackApp = slack.methods(slackBotToken)
-    slackApp.chatPostMessage(ChatPostMessageRequest.builder()
-        .channel(slackChannelId)
-        .text("Nasłuchiwanie na wiadomości rozpoczęte.")
-        .build()
-    )
 
     val server = embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) {
@@ -71,6 +63,29 @@ fun Application.module() {
             val postParameters = call.receive<MessagePost>()
             sendToSlack(client, channelId, "xoxb-6845263267716-6828282409719-oxiJDWmbk0SJvIg92KqtQyAb", postParameters.message)
             call.respondText("Message sent to Slack channel $channelId", status = HttpStatusCode.OK)
+        }
+
+        post("/slack/events") {
+            val jsonBody = call.receiveText()
+            val jsonElement = Json.parseToJsonElement(jsonBody)
+            val eventType = jsonElement.jsonObject["type"]?.jsonPrimitive?.content
+
+            if (eventType == "url_verification") {
+                val challenge = jsonElement.jsonObject["challenge"]?.jsonPrimitive?.content
+                call.respondText(challenge ?: "", ContentType.Text.Plain)
+                return@post
+            }
+
+            if (eventType == "event_callback") {
+                val event = jsonElement.jsonObject["event"]?.jsonObject
+                val messageType = event?.get("type")?.jsonPrimitive?.content
+                if (messageType == "message") {
+                    val messageText = event["text"]?.jsonPrimitive?.content
+                    println("SLACK: $messageText")
+                }
+            }
+
+            call.respond(HttpStatusCode.OK)
         }
     }
 }
