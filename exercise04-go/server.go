@@ -24,7 +24,10 @@ func main() {
 			return next(c)
 		}
 	})
+
 	db.AutoMigrate(&models.Product{})
+	db.AutoMigrate(&models.Cart{})
+	db.AutoMigrate(&models.Category{})
 
 	// Products
 	e.POST("/products", controllers.CreateProduct)
@@ -32,6 +35,13 @@ func main() {
 	e.GET("/products/:id", controllers.GetProduct)
 	e.PUT("/products/:id", controllers.UpdateProduct)
 	e.DELETE("/products/:id", controllers.DeleteProduct)
+
+	// Categories
+	e.POST("/categories", controllers.CreateCategory)
+	e.GET("/categories", controllers.GetCategories)
+	e.GET("/categories/:id", controllers.GetCategory)
+	e.PUT("/categories/:id", controllers.UpdateCategory)
+	e.DELETE("/categories/:id", controllers.DeleteCategory)
 
 	e.Start(":8080")
 }
