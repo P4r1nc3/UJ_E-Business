@@ -26,6 +26,12 @@ func main() {
 	})
 	db.AutoMigrate(&models.Product{})
 
+	// Products
 	e.POST("/products", controllers.CreateProduct)
+	e.GET("/products", controllers.GetProducts)
+	e.GET("/products/:id", controllers.GetProduct)
+	e.PUT("/products/:id", controllers.UpdateProduct)
+	e.DELETE("/products/:id", controllers.DeleteProduct)
+
 	e.Start(":8080")
 }
