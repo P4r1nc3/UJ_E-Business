@@ -13,6 +13,14 @@ func CreateProduct(c echo.Context) error {
 	if err := c.Bind(product); err != nil {
 		return err
 	}
+
+	if product.CategoryID != 0 {
+		var category models.Category
+		if err := db.First(&category, product.CategoryID).Error; err != nil {
+			return c.JSON(http.StatusBadRequest, "Category does not exist")
+		}
+	}
+
 	db.Create(&product)
 	return c.JSON(http.StatusCreated, product)
 }
@@ -38,14 +46,28 @@ func GetProduct(c echo.Context) error {
 func UpdateProduct(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get("db").(*gorm.DB)
+
 	var product models.Product
 	if db.First(&product, id).Error != nil {
 		return c.JSON(http.StatusNotFound, "Product not found")
 	}
-	if err := c.Bind(&product); err != nil {
+
+	var updateData models.Product
+	if err := c.Bind(&updateData); err != nil {
 		return err
 	}
-	db.Save(&product)
+
+	if updateData.CategoryID != 0 && updateData.CategoryID != product.CategoryID {
+		var category models.Category
+		if err := db.First(&category, updateData.CategoryID).Error; err != nil {
+			return c.JSON(http.StatusBadRequest, "Category does not exist")
+		}
+	}
+
+	if err := db.Model(&product).Updates(updateData).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, "Could not update product")
+	}
+
 	return c.JSON(http.StatusOK, product)
 }
 
