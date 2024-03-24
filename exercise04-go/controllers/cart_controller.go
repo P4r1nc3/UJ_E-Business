@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/labstack/echo/v4"
 	"goproject/models"
+	"goproject/scopes"
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
@@ -24,12 +25,12 @@ func AddProductToCart(c echo.Context) error {
 	productID := c.Param("productId")
 
 	var cart models.Cart
-	if err := db.Preload("Products").First(&cart, cartID).Error; err != nil {
+	if err := scopes.PreloadProducts(scopes.FindByID(cartID)(db)).First(&cart).Error; err != nil {
 		return c.JSON(http.StatusNotFound, "Cart not found")
 	}
 
 	var product models.Product
-	if err := db.First(&product, productID).Error; err != nil {
+	if err := scopes.FindByID(productID)(db).First(&product).Error; err != nil {
 		return c.JSON(http.StatusNotFound, "Product not found")
 	}
 
@@ -44,7 +45,7 @@ func GetCart(c echo.Context) error {
 	cartID := c.Param("cartId")
 
 	var cart models.Cart
-	if err := db.Preload("Products").First(&cart, cartID).Error; err != nil {
+	if err := scopes.PreloadProducts(scopes.FindByID(cartID)(db)).First(&cart).Error; err != nil {
 		return c.JSON(http.StatusNotFound, "Cart not found")
 	}
 
@@ -62,7 +63,7 @@ func DeleteProductFromCart(c echo.Context) error {
 	}
 
 	var cart models.Cart
-	if err := db.Preload("Products").First(&cart, cartID).Error; err != nil {
+	if err := scopes.PreloadProducts(scopes.FindByID(cartID)(db)).First(&cart).Error; err != nil {
 		return c.JSON(http.StatusNotFound, "Cart not found")
 	}
 
@@ -85,7 +86,7 @@ func DeleteCart(c echo.Context) error {
 	cartID := c.Param("cartId")
 
 	var cart models.Cart
-	if err := db.First(&cart, cartID).Error; err != nil {
+	if err := scopes.FindByID(cartID)(db).First(&cart).Error; err != nil {
 		return c.JSON(http.StatusNotFound, "Cart not found")
 	}
 
