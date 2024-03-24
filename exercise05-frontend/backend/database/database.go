@@ -17,6 +17,7 @@ func SetupDatabase() *gorm.DB {
 
 	db.AutoMigrate(&models.Product{})
 	db.AutoMigrate(&models.Cart{})
+	db.AutoMigrate(&models.CartProduct{})
 	db.AutoMigrate(&models.Payment{})
 
 	return db
