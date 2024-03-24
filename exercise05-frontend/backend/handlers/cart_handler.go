@@ -88,11 +88,13 @@ func AddProductToCart(c echo.Context) error {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not add product to cart"})
 		}
 	} else {
-		db.Model(&cartProduct).Update("quantity", cartProduct.Quantity+1)
+		newQuantity := cartProduct.Quantity + 1
+		newPrice := product.Price * float64(newQuantity)
+		db.Model(&cartProduct).Updates(models.CartProduct{Quantity: newQuantity, Price: newPrice})
 	}
 
 	var total float64
-	db.Model(&models.CartProduct{}).Where("cart_id = ?", cartId).Select("sum(price * quantity)").Row().Scan(&total)
+	db.Model(&models.CartProduct{}).Where("cart_id = ?", cartId).Select("sum(price)").Row().Scan(&total)
 	db.Model(&models.Cart{}).Where("id = ?", cartId).Update("total", total)
 
 	return c.JSON(http.StatusOK, echo.Map{"message": "Product added/updated in cart successfully"})
