@@ -77,7 +77,7 @@ func DeleteProductFromCart(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, "Could not delete product from cart")
 	}
 
-	return c.JSON(http.StatusOK, "Product removed from cart")
+	return c.NoContent(http.StatusNoContent)
 }
 
 func DeleteCart(c echo.Context) error {
