@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/labstack/echo/v4"
 	"goproject/models"
+	"goproject/scopes"
 	"gorm.io/gorm"
 	"net/http"
 )
@@ -20,7 +21,7 @@ func CreateCategory(c echo.Context) error {
 func GetCategories(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
 	var categories []models.Category
-	db.Preload("Products").Find(&categories)
+	scopes.PreloadProducts(db).Find(&categories)
 	return c.JSON(http.StatusOK, categories)
 }
 
@@ -28,7 +29,7 @@ func GetCategory(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get("db").(*gorm.DB)
 	var category models.Category
-	result := db.Preload("Products").First(&category, id)
+	result := scopes.PreloadProducts(scopes.FindByID(id)(db)).First(&category)
 	if result.Error != nil {
 		return c.JSON(http.StatusNotFound, "Category not found")
 	}
@@ -39,7 +40,7 @@ func UpdateCategory(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get("db").(*gorm.DB)
 	var category models.Category
-	if err := db.First(&category, id).Error; err != nil {
+	if err := scopes.FindByID(id)(db).First(&category).Error; err != nil {
 		return c.JSON(http.StatusNotFound, "Category not found")
 	}
 	if err := c.Bind(&category); err != nil {
@@ -53,7 +54,7 @@ func DeleteCategory(c echo.Context) error {
 	id := c.Param("id")
 	db := c.Get("db").(*gorm.DB)
 	var category models.Category
-	if err := db.First(&category, id).Error; err != nil {
+	if err := scopes.FindByID(id)(db).First(&category).Error; err != nil {
 		return c.JSON(http.StatusNotFound, "Category not found")
 	}
 	db.Delete(&category)
