@@ -102,6 +102,62 @@ func AddProductToCart(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"message": "Product added/updated in cart successfully"})
 }
 
+func UpdateProductInCart(c echo.Context) error {
+	db := c.Get("db").(*gorm.DB)
+
+	cartIdParam := c.Param("cartId")
+	productIdParam := c.Param("productId")
+	quantityParam := c.QueryParam("quantity")
+
+	cartId, err := strconv.ParseUint(cartIdParam, 10, 32)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid cart ID"})
+	}
+
+	productId, err := strconv.ParseUint(productIdParam, 10, 32)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid product ID"})
+	}
+
+	quantity, err := strconv.Atoi(quantityParam)
+	if err != nil || quantity < 0 {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid quantity"})
+	}
+
+	var product models.Product
+	if err := db.First(&product, productId).Error; err != nil {
+		return c.JSON(http.StatusNotFound, echo.Map{"error": "Product not found"})
+	}
+
+	if quantity == 0 {
+		// Delete product from cart if quantity is set to 0
+		if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).Delete(&models.CartProduct{}).Error; err != nil {
+			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not delete product from cart"})
+		}
+	} else {
+		var cartProduct models.CartProduct
+		if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).First(&cartProduct).Error; err == gorm.ErrRecordNotFound {
+			// Add new product to the cart if not exists
+			cartProduct = models.CartProduct{
+				CartID:    uint(cartId),
+				ProductID: uint(productId),
+				Quantity:  quantity,
+				Price:     product.Price,
+			}
+		} else {
+			// Update existing product quantity in the cart
+			cartProduct.Quantity = quantity
+		}
+		cartProduct.Price = float64(cartProduct.Quantity) * product.Price
+
+		if err := db.Save(&cartProduct).Error; err != nil {
+			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not update product in cart"})
+		}
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"message": "Product quantity updated successfully"})
+}
+
 func DeleteProductFromCart(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
 	cartIdParam := c.Param("cartId")
