@@ -1,21 +1,20 @@
-import React from 'react';
-
-const products = [
-    {
-        id: 1,
-        name: 'Product 1',
-        description: 'This is a description of Product 1. It is a great product.',
-        price: 10.99
-    },
-    {
-        id: 2,
-        name: 'Product 2',
-        description: 'This is a description of Product 2. It is an awesome product.',
-        price: 20.99
-    },
-];
+import React, { useState, useEffect } from 'react';
 
 function Products() {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/products')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => setProducts(data))
+            .catch(error => console.error('There has been a problem with your fetch operation:', error));
+    }, []);
+
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-6 text-center">Our Products</h2>
