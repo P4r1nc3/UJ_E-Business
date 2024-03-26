@@ -84,12 +84,16 @@ func AddProductToCart(c echo.Context) error {
 			Quantity:  1,
 			Price:     product.Price,
 		}
+		cartProduct.Price *= float64(cartProduct.Quantity)
+
 		if err := db.Create(&cartProduct).Error; err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not add product to cart"})
 		}
 	} else {
 		newQuantity := cartProduct.Quantity + 1
 		cartProduct.Quantity = newQuantity
+		cartProduct.Price = float64(newQuantity) * product.Price
+
 		if err := db.Save(&cartProduct).Error; err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not update product quantity in cart"})
 		}
