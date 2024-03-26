@@ -17,9 +17,6 @@ function App() {
               <li>
                 <Link to="/cart" className="hover:text-gray-300">Cart</Link>
               </li>
-              <li>
-                <Link to="/payment" className="hover:text-gray-300">Payment</Link>
-              </li>
             </ul>
           </nav>
           <main className="p-4">
