@@ -1,35 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function Products() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/products')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            })
-            .then(data => setProducts(data))
-            .catch(error => console.error('There has been a problem with your fetch operation:', error));
+        fetchProducts();
     }, []);
 
-    const addToCart = (productId) => {
-        fetch(`http://localhost:8080/carts/1/products/${productId}`, {
-            method: 'POST',
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Problem with adding the product to the cart');
-                }
-                alert('Product added to cart');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to add product to cart');
-            });
+    const fetchProducts = async () => {
+        try {
+            const url = 'http://localhost:8080/products';
+            const response = await axios.get(url);
+            setProducts(response.data);
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        }
     };
+
+    const addToCart = async (productId) => {
+        try {
+            const url = `http://localhost:8080/carts/1/products/${productId}`;
+            await axios.post(url);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-6 text-center">Our Products</h2>

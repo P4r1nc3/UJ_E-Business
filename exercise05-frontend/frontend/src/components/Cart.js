@@ -10,16 +10,17 @@ function Cart() {
 
     const fetchCartData = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/carts/1');
+            const url = 'http://localhost:8080/carts/1';
+            const response = await axios.get(url);
             setCartItems(response.data.products);
         } catch (error) {
             console.error('Error fetching cart:', error);
         }
     };
 
-    const updateQuantity = async (cartId, productId, quantity) => {
+    const updateQuantity = async (productId, quantity) => {
         try {
-            const url = `http://localhost:8080/carts/${cartId}/products/${productId}?quantity=${quantity}`;
+            const url = `http://localhost:8080/carts/1/products/${productId}?quantity=${quantity}`;
             await axios.put(url);
             fetchCartData();
         } catch (error) {
@@ -29,7 +30,8 @@ function Cart() {
 
     const removeItem = async (productId) => {
         try {
-            await axios.delete(`http://localhost:8080/carts/1/products/${productId}`);
+            const url = `http://localhost:8080/carts/1/products/${productId}`;
+            await axios.delete(url);
             fetchCartData();
         } catch (error) {
             console.error('Error removing item:', error);
@@ -49,9 +51,9 @@ function Cart() {
                             <p className="text-lg">${parseFloat(item.price).toFixed(2)} <span className="text-sm font-normal">(${parseFloat(item.Product.price).toFixed(2)} each)</span></p>
                         </div>
                         <div className="flex items-center">
-                            <button onClick={() => item.quantity > 1 && updateQuantity(1, item.Product.productId, item.quantity - 1)}>-</button>
+                            <button onClick={() => item.quantity > 1 && updateQuantity(item.Product.productId, item.quantity - 1)}>-</button>
                             <span className="mx-2">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(1, item.Product.productId, item.quantity + 1)}>+</button>
+                            <button onClick={() => updateQuantity(item.Product.productId, item.quantity + 1)}>+</button>
                             <button onClick={() => removeItem(item.Product.productId)} className="ml-4">🗑</button>
                         </div>
                     </div>
