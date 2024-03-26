@@ -130,14 +130,12 @@ func UpdateProductInCart(c echo.Context) error {
 	}
 
 	if quantity == 0 {
-		// Delete product from cart if quantity is set to 0
 		if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).Delete(&models.CartProduct{}).Error; err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not delete product from cart"})
 		}
 	} else {
 		var cartProduct models.CartProduct
 		if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).First(&cartProduct).Error; err == gorm.ErrRecordNotFound {
-			// Add new product to the cart if not exists
 			cartProduct = models.CartProduct{
 				CartID:    uint(cartId),
 				ProductID: uint(productId),
@@ -145,7 +143,6 @@ func UpdateProductInCart(c echo.Context) error {
 				Price:     product.Price,
 			}
 		} else {
-			// Update existing product quantity in the cart
 			cartProduct.Quantity = quantity
 		}
 		cartProduct.Price = float64(cartProduct.Quantity) * product.Price
