@@ -18,6 +18,7 @@ func main() {
 
 	routes.ProductRoutes(e)
 	routes.CartRoutes(e)
+	routes.PaymentRoutes(e)
 
 	e.Start(":8080")
 }
