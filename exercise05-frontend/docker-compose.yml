@@ -22,3 +22,12 @@ services:
       DB_NAME: gobackend
       DB_HOST: db
     command: ["/wait-for-it.sh", "db:3306", "--", "./server"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
