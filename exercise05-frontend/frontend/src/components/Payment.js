@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../CartContext';
 
 function Payment() {
     const navigate = useNavigate();
+    const { totalValue } = useCart();
     const [shippingData, setShippingData] = useState({
         name: '',
         address: '',
@@ -31,7 +33,7 @@ function Payment() {
         const requestData = {
             ...shippingData,
             ...paymentData,
-            amount: 150,
+            amount: totalValue,
             cartId: 1,
         };
 
