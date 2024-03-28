@@ -9,7 +9,7 @@ import (
 )
 
 func SetupDatabase() *gorm.DB {
-	dsn := "root:admin12345@tcp(localhost:3306)/gobackend?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:admin12345@tcp(db:3306)/gobackend?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Panic("failed to connect database")
