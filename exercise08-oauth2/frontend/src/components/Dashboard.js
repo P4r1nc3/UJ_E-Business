@@ -1,18 +1,9 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        localStorage.removeItem("userToken");
-        navigate("/login");
-    };
-
     return (
-        <div>
-            <h2>You are logged in</h2>
-            <button onClick={handleLogout}>Logout</button>
+        <div className="flex justify-center items-center bg-gray-100" style={{ minHeight: 'calc(100vh - 4rem)' }}>
+            <h2 className="text-2xl font-bold text-gray-900">You are logged in</h2>
         </div>
     );
 };
