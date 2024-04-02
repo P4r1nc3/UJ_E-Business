@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import {useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
+import {useAuth} from "../contexts/AuthContext";
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const { data } = await axios.post('http://localhost:3001/api/user/login', { email, password });
-            localStorage.setItem('userToken', data);
+            login(data);
             navigate("/dashboard");
         } catch (error) {
             alert('Login failed: ' + error.response.data);

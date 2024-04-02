@@ -1,8 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navigation = () => {
-    const isAuthenticated = localStorage.getItem('userToken');
+    const { isAuthenticated, logout } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <nav className="bg-gray-800 text-white p-4">
@@ -11,8 +13,8 @@ const Navigation = () => {
                     <div className="flex gap-4">
                         <Link to="/dashboard" className="hover:text-gray-300">Dashboard</Link>
                         <button onClick={() => {
-                            localStorage.removeItem('userToken');
-                            window.location.href = '/login';
+                            logout();
+                            navigate('/login');
                         }} className="hover:text-gray-300">
                             Logout
                         </button>

@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import Register from './components/Register';
-import RequireAuth from './helpers/RequireAuth';
 import Navigation from './components/Navigation';
 
 const AppRouter = () => (
