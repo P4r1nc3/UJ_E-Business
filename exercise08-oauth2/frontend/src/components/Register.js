@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -11,7 +12,17 @@ const Register = () => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:3001/api/user/register', { email, password });
-            navigate("/dashboard");
+            toast.success("Your account has been successfully created. You can now log in.", {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: { marginTop: '100px' },
+            });
+            navigate("/login");
         } catch (error) {
             alert('Registration failed: ' + (error.response && error.response.data ? error.response.data : error.message));
         }
