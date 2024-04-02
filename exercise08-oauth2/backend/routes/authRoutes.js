@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
 
 require('dotenv').config();
 
@@ -21,6 +22,28 @@ passport.use(new GoogleStrategy({
             if (!user) {
                 user = await User.create({
                     googleId: profile.id,
+                    email: profile.emails[0].value,
+                    isLocal: false
+                });
+            }
+            done(null, user);
+        } catch (error) {
+            done(error, null);
+        }
+    }
+));
+
+passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: "/api/user/auth/github/callback"
+    },
+    async (accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await User.findOne({ githubId: profile.id });
+            if (!user) {
+                user = await User.create({
+                    githubId: profile.id,
                     email: profile.emails[0].value,
                     isLocal: false
                 });
@@ -80,5 +103,18 @@ router.get('/google/callback',
         res.redirect(`http://localhost:3000/dashboard?token=${token}`);
     }
 );
+
+router.get('/auth/github',
+    passport.authenticate('github', { scope: [ 'user:email' ] })
+);
+
+router.get('/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/login' }),
+    (req, res) => {
+        const token = jwt.sign({ _id: req.user._id }, process.env.TOKEN_SECRET);
+        res.redirect(`http://localhost:3000/dashboard?token=${token}`);
+    }
+);
+
 
 module.exports = router;

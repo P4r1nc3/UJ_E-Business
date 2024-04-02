@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import {useNavigate } from 'react-router-dom';
-import { FcGoogle } from 'react-icons/fc';
-import {useAuth} from "../contexts/AuthContext";
+import { useNavigate } from 'react-router-dom';
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -49,9 +49,18 @@ const Login = () => {
                         className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       <span className="mr-2">
-                        <FcGoogle size={20} />
+                        <FaGoogle size={20} />
                       </span>
                         Login with Google
+                    </button>
+                    <button
+                        onClick={() => window.location.href='http://localhost:3001/api/user/auth/github'}
+                        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    >
+                      <span className="mr-2">
+                        <FaGithub size={20} />
+                      </span>
+                        Login with GitHub
                     </button>
                 </form>
             </div>

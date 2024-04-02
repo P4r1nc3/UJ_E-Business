@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: function() { return this.isLocal; }},
     isLocal: { type: Boolean, default: true },
-    googleId: { type: String, required: false }
+    googleId: { type: String, required: false },
+    githubId: { type: String, required: false }
 });
 
 userSchema.pre('save', async function (next) {
