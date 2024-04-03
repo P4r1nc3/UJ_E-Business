@@ -55,7 +55,10 @@ fun Application.module(discordClient: DiscordClient, slackClient: SlackClient, o
                 )
             )
             val aiResponse = chatCompletion.choices.firstOrNull()?.message?.content ?: "Sorry, I couldn't process that."
-            call.respondText(aiResponse, status = HttpStatusCode.OK)
+            call.respond(
+                HttpStatusCode.OK,
+                mapOf("message" to aiResponse)
+            )
         }
     }
 }
