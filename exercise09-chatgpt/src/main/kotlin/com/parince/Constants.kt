@@ -39,6 +39,9 @@ val closings = listOf(
     "See you next time! If you need further assistance, don't hesitate to reach out."
 )
 
+val shoppingRelatedMessage = "Only messages related to shopping are allowed!" +
+    " Try using keywords: shop, store, clothes, clothing, apparel, buy, purchase.";
+
 object Constants {
     // Discord
     const val discordBotToken = "MTE3ODQ0NjUwMDgxNzI4NTEyMA.GlutqJ.R6dNwrqYdlDP4xd1xSLNCBcs24pocN4y74NZMA"
