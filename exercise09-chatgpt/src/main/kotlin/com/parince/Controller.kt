@@ -62,7 +62,10 @@ fun Application.module(discordClient: DiscordClient, slackClient: SlackClient, o
             val userMessage = call.receive<String>()
 
             if (!isShoppingRelated(userMessage)) {
-                call.respond(HttpStatusCode.BadRequest, "Only messages related to shopping are allowed")
+                call.respond(
+                    HttpStatusCode.OK,
+                    mapOf("message" to shoppingRelatedMessage)
+                )
                 return@post
             }
 
@@ -72,6 +75,7 @@ fun Application.module(discordClient: DiscordClient, slackClient: SlackClient, o
                     messages = listOf(ChatMessage(role = ChatRole.User, content = userMessage))
                 )
             )
+
             val aiResponse = chatCompletion.choices.firstOrNull()?.message?.content ?: "Sorry, I couldn't process that."
             call.respond(
                 HttpStatusCode.OK,
