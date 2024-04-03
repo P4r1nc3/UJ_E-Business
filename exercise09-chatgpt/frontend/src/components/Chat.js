@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
@@ -25,21 +24,28 @@ const Chat = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen p-4">
+        <div className="flex flex-col h-screen p-4 bg-gray-100">
             <div className="flex-grow overflow-auto">
                 {messages.map((msg, index) => (
-                    <div key={index} className={`p-2 ${msg.author === 'user' ? 'text-right' : ''}`}>
-                        {msg.message}
+                    <div key={index} className={`p-4 rounded-lg max-w-md mx-2 my-2 shadow ${msg.author === 'user' ? 'bg-gray-300 ml-auto' : 'bg-gray-200 mr-auto'}`}>
+                        <span className="block text-gray-800">{msg.message}</span>
                     </div>
                 ))}
             </div>
-            <div className="flex-none">
+            <div className="flex-none flex gap-2">
                 <input
-                    className="border p-2 w-full"
+                    className="border p-2 w-full rounded-lg"
+                    placeholder="Type your message here..."
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 />
+                <button
+                    onClick={sendMessage}
+                    className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                >
+                    Send
+                </button>
             </div>
         </div>
     );
