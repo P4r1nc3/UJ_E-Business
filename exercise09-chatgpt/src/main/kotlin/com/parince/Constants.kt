@@ -24,10 +24,8 @@ val products = listOf(
 
 object Constants {
     // Discord
-    const val discordChannelId = "1220501870766723202"
     const val discordBotToken = "MTE3ODQ0NjUwMDgxNzI4NTEyMA.GlutqJ.R6dNwrqYdlDP4xd1xSLNCBcs24pocN4y74NZMA"
 
     // Slack
-    const val slackChannelId = "C06QL4U3FKQ"
     const val slackBotToken = "xoxb-6845263267716-6828282409719-oxiJDWmbk0SJvIg92KqtQyAb"
 }

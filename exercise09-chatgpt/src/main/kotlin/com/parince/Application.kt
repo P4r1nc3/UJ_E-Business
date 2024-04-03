@@ -1,5 +1,6 @@
 package com.parince
 
+import com.aallam.openai.client.OpenAI
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -10,13 +11,14 @@ fun main() {
     val discordClient = DiscordClient(Constants.discordBotToken)
     val slackClient = SlackClient(Constants.slackBotToken)
 
-    discordClient.initialize(categories, products)
+    val openAiToken = System.getenv("OPENAI_TOKEN")
+    val openai = OpenAI(token = openAiToken)
 
     val server = embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) {
             json()
         }
-        module(discordClient, slackClient)
+        module(discordClient, slackClient, openai)
     }
     server.start(wait = true)
 }
