@@ -42,6 +42,9 @@ dependencies {
     // Discord4J
     implementation ("com.discord4j:discord4j-core:3.2.0")
 
+    // OpenAI
+    implementation ("com.aallam.openai:openai-client:3.2.5")
+
     // Slack API (java-slack-sdk)
     implementation ("com.slack.api:slack-api-client:1.8.1")
     implementation ("com.slack.api:slack-api-model:1.8.1")
