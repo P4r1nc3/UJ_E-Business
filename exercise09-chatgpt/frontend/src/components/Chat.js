@@ -4,6 +4,20 @@ import axios from 'axios';
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
+    const [conversationStarted, setConversationStarted] = useState(false);
+
+    const startConversation = async () => {
+        try {
+            const response = await axios.post('http://localhost:8080/openai/chat', {
+                message: "Start Conversation"
+            });
+            const { message } = response.data;
+            setMessages([{ message, author: 'ai' }]);
+            setConversationStarted(true);
+        } catch (error) {
+            console.error("There was an error starting the conversation: ", error);
+        }
+    };
 
     const sendMessage = async () => {
         if (userInput.trim() === '') return;
@@ -32,21 +46,32 @@ const Chat = () => {
                     </div>
                 ))}
             </div>
-            <div className="flex-none flex gap-2">
-                <input
-                    className="border p-2 w-full rounded-lg"
-                    placeholder="Type your message here..."
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                />
-                <button
-                    onClick={sendMessage}
-                    className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-                >
-                    Send
-                </button>
-            </div>
+            {conversationStarted ? (
+                <div className="flex-none flex gap-2">
+                    <input
+                        className="border p-2 w-full rounded-lg"
+                        placeholder="Type your message here..."
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                    />
+                    <button
+                        onClick={sendMessage}
+                        className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Send
+                    </button>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center h-full">
+                    <button
+                        onClick={startConversation}
+                        className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Start Conversation
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
