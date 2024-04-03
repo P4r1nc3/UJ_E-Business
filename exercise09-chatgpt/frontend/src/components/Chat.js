@@ -9,9 +9,7 @@ const Chat = () => {
 
     const startConversation = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/openai/chat', {
-                message: "Start Conversation"
-            });
+            const response = await axios.get('http://localhost:8080/opening');
             const { message } = response.data;
             setAllMessages([{ message, author: 'ai' }]);
             setConversationStarted(true);
@@ -22,9 +20,7 @@ const Chat = () => {
 
     const endConversation = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/openai/chat', {
-                message: "End Conversation"
-            });
+            const response = await axios.get('http://localhost:8080/closing');
             const { message } = response.data;
             setAllMessages(messages => [...messages, { message, author: 'ai' }]);
             setConversationEnded(true);

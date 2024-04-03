@@ -60,6 +60,12 @@ fun Application.module(discordClient: DiscordClient, slackClient: SlackClient, o
 
         post("/openai/chat") {
             val userMessage = call.receive<String>()
+
+            if (!isShoppingRelated(userMessage)) {
+                call.respond(HttpStatusCode.BadRequest, "Only messages related to shopping are allowed")
+                return@post
+            }
+
             val chatCompletion = openai.chatCompletion(
                 ChatCompletionRequest(
                     model = ModelId("gpt-3.5-turbo"),
@@ -72,5 +78,25 @@ fun Application.module(discordClient: DiscordClient, slackClient: SlackClient, o
                 mapOf("message" to aiResponse)
             )
         }
+
+        get("/opening") {
+            call.respond(
+                HttpStatusCode.OK,
+                mapOf("message" to openings.random())
+            )
+        }
+
+        get("/closing") {
+            call.respond(
+                HttpStatusCode.OK,
+                mapOf("message" to closings.random())
+            )
+        }
     }
+}
+
+fun isShoppingRelated(message: String): Boolean {
+    val keywords = listOf("shop", "store", "clothes", "clothing", "apparel", "buy", "purchase")
+    val sanitizedMessage = message.toLowerCase()
+    return keywords.any { sanitizedMessage.contains(it) }
 }
