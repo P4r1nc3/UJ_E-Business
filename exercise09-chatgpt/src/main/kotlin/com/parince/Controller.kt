@@ -12,9 +12,21 @@ import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.http.*
+import io.ktor.server.plugins.cors.routing.*
 
 @OptIn(BetaOpenAI::class)
 fun Application.module(discordClient: DiscordClient, slackClient: SlackClient, openai: OpenAI) {
+
+    install(CORS) {
+        anyHost()
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader("X-Requested-With")
+        allowCredentials = true
+    }
+
     routing {
         post("/discord/{channelId}") {
             val channelId = call.parameters["channelId"]
