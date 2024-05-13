@@ -80,7 +80,7 @@
     "run_settings": {
         "cypress_config_file": "./cypress.config.js",
         "project_name": "E-Business",
-        "build_name": "Exercise6",
+        "build_name": "Exercise06",
         "exclude": [],
         "parallels": "1",
         "npm_dependencies": {},
