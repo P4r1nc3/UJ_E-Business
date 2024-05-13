@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { useCart } from '../CartContext'; // Upewnij się, że ścieżka jest prawidłowa
+import { useCart } from '../CartContext';
 
 function Cart() {
     const [cartItems, setCartItems] = useState([]);
-    const { totalValue, updateTotalValue } = useCart(); // Zmodyfikowano, aby użyć totalValue z kontekstu
+    const { totalValue, updateTotalValue } = useCart();
 
     useEffect(() => {
         fetchCartData();
@@ -14,7 +14,7 @@ function Cart() {
     useEffect(() => {
         const newTotalValue = cartItems.reduce((acc, item) => acc + item.price, 0);
         updateTotalValue(newTotalValue);
-    }, [cartItems, updateTotalValue]); // Dodano updateTotalValue do tablicy zależności
+    }, [cartItems, updateTotalValue]);
 
     const fetchCartData = async () => {
         try {
