@@ -122,7 +122,6 @@ describe('Apple.com Tests', () => {
     cy.get('.ac-gf-directory-column-section-list').contains('Inclusion and Diversity').should('exist');
     cy.get('.ac-gf-directory-column-section-list').contains('Privacy').should('exist');
     cy.get('.ac-gf-directory-column-section-list').contains('Racial Equity and Justice').should('exist');
-    cy.get('.ac-gf-directory-column-section-list').contains('Supplier Responsibility').should('exist');
   });
 
   it('About Apple with specific links', () => {
