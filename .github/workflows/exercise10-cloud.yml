@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - exercise10-cloud
 
 permissions:
   contents: read
