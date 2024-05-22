@@ -1,0 +1,93 @@
+name: Build and Deploy exercise10
+on:
+  push:
+    branches:
+      - exercise10-cloud
+
+permissions:
+  contents: read
+
+env:
+  DOCKER_USER: ${{ secrets.DOCKER_USER }}
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          repository: P4r1nc3/UJ_E-Business
+          ref: exercise10-cloud
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Login to Docker
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+
+      - name: Build and push frontend
+        working-directory: exercise10-cloud/frontend
+        run: |
+          docker build -t $DOCKER_USER/uj-app-frontend .
+          docker push $DOCKER_USER/uj-app-frontend
+
+      - name: Build and push backend
+        working-directory: exercise10-cloud/backend
+        run: |
+          docker build -t $DOCKER_USER/uj-app-backend .
+          docker push $DOCKER_USER/uj-app-backend
+
+  deploy:
+    permissions:
+      contents: none
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-backend.outputs.webapp-url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          repository: P4r1nc3/UJ_E-Business
+          ref: exercise10-cloud
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Deploy backend to Azure Web App
+        id: deploy-backend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: uj-app-backend
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_BACKEND }}
+          images: ${{ env.DOCKER_USER }}/uj-app-backend:latest
+
+      - name: Deploy frontend to Azure Web App
+        id: deploy-frontend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: uj-app-frontend
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
+          images: ${{ env.DOCKER_USER }}/uj-app-frontend:latest
+
+  send_email:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v3.7.2
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Build finished
+          body: |
+            Deploy job of ${{ github.repository }} completed successfully!
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
