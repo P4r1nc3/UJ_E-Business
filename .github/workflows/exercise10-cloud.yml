@@ -32,7 +32,7 @@ jobs:
           docker push $DOCKER_USER/uj-app-frontend
 
       - name: Build and push backend
-        working-directory: exercise10/backend
+        working-directory: exercise10-cloud/backend
         run: |
           docker build -t $DOCKER_USER/uj-app-backend .
           docker push $DOCKER_USER/uj-app-backend
