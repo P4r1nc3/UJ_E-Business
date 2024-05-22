@@ -18,7 +18,7 @@ function Cart() {
 
     const fetchCartData = async () => {
         try {
-            const url = 'http://localhost:8080/carts/1';
+            const url = 'https://uj-app-backend.azurewebsites.net/carts/1';
             const response = await axios.get(url);
             setCartItems(response.data.products);
         } catch (error) {
@@ -28,7 +28,7 @@ function Cart() {
 
     const updateQuantity = async (productId, quantity) => {
         try {
-            const url = `http://localhost:8080/carts/1/products/${productId}?quantity=${quantity}`;
+            const url = `https://uj-app-backend.azurewebsites.net/carts/1/products/${productId}?quantity=${quantity}`;
             await axios.put(url);
             fetchCartData();
         } catch (error) {
@@ -38,7 +38,7 @@ function Cart() {
 
     const removeItem = async (productId) => {
         try {
-            const url = `http://localhost:8080/carts/1/products/${productId}`;
+            const url = `https://uj-app-backend.azurewebsites.net/carts/1/products/${productId}`;
             await axios.delete(url);
             fetchCartData();
         } catch (error) {

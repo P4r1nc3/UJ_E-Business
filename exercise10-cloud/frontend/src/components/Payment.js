@@ -38,7 +38,7 @@ function Payment() {
         };
 
         try {
-            await axios.post('http://localhost:8080/payment', requestData);
+            await axios.post('https://uj-app-backend.azurewebsites.net/payment', requestData);
             alert('Thank you for your purchase!');
             navigate('/');
         } catch (error) {

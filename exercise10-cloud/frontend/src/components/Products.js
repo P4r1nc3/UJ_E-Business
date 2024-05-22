@@ -10,7 +10,7 @@ function Products() {
 
     const fetchProducts = async () => {
         try {
-            const url = 'http://localhost:8080/products';
+            const url = 'https://uj-app-backend.azurewebsites.net/products';
             const response = await axios.get(url);
             setProducts(response.data);
         } catch (error) {
@@ -20,7 +20,7 @@ function Products() {
 
     const addToCart = async (productId) => {
         try {
-            const url = `http://localhost:8080/carts/1/products/${productId}`;
+            const url = `https://uj-app-backend.azurewebsites.net/carts/1/products/${productId}`;
             await axios.post(url);
         } catch (error) {
             console.error('Error:', error);
