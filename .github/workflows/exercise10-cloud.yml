@@ -1,4 +1,4 @@
-name: Build exercise10
+name: Build and Deploy exercise10
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 env:
-  DOCKER_USER: ${{secrets.DOCKER_USER}}
+  DOCKER_USER: ${{ secrets.DOCKER_USER }}
 
 jobs:
   build_and_push:
@@ -21,9 +21,9 @@ jobs:
 
       - name: Login to Docker
         env:
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
 
       - name: Build and push frontend
         working-directory: exercise10-cloud/frontend
@@ -37,36 +37,33 @@ jobs:
           docker build -t $DOCKER_USER/uj-app-backend .
           docker push $DOCKER_USER/uj-app-backend
 
-  deploy_backend:
+  deploy:
     permissions:
       contents: none
     needs: build_and_push
     runs-on: ubuntu-latest
     environment:
-      name: 'Production backend'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      name: 'Production'
+      url: ${{ steps.deploy-backend.outputs.webapp-url }}
 
     steps:
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose -f exercise10-cloud/docker-compose.yml up -d
+
+      - name: Deploy backend to Azure Web App
+        id: deploy-backend
         uses: azure/webapps-deploy@v2
         with:
           app-name: uj-app-backend
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_BACKEND }}
           images: ${{ env.DOCKER_USER }}/uj-app-backend:latest
 
-  deploy_frontend:
-    permissions:
-      contents: none
-    needs: build_and_push
-    runs-on: ubuntu-latest
-    environment:
-      name: 'Production frontend'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
+      - name: Deploy frontend to Azure Web App
+        id: deploy-frontend
         uses: azure/webapps-deploy@v2
         with:
           app-name: uj-app-frontend
