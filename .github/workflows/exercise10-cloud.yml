@@ -36,3 +36,37 @@ jobs:
         run: |
           docker build -t $DOCKER_USER/uj-app-backend .
           docker push $DOCKER_USER/uj-app-backend
+
+  deploy_backend:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    environment:
+      name: 'Production backend'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: uj-app-backend
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_BACKEND }}
+          images: ${{ env.DOCKER_USER }}/uj-app-backend:latest
+
+  deploy_front:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    environment:
+      name: 'Production frontend'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: uj-app-frontend
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
+          images: ${{ env.DOCKER_USER }}/uj-app-frontend:latest
