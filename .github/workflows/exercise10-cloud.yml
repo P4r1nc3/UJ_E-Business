@@ -58,10 +58,6 @@ jobs:
           ref: exercise10-cloud
           token: ${{ secrets.GH_PAT }}
 
-      - name: Set up Docker Compose
-        run: |
-          docker-compose -f exercise10-cloud/docker-compose.yml up -d
-
       - name: Deploy backend to Azure Web App
         id: deploy-backend
         uses: azure/webapps-deploy@v2
