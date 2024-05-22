@@ -1,0 +1,38 @@
+name: Build exercise10
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+env:
+  DOCKER_USER: ${{secrets.DOCKER_USER}}
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: run_tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker
+        env:
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+
+      - name: Build and push frontend
+        working-directory: exercise10-cloud/frontend
+        run: |
+          docker build -t $DOCKER_USER/uj-app-frontend .
+          docker push $DOCKER_USER/uj-app-frontend
+
+      - name: Build and push backend
+        working-directory: exercise10/backend
+        run: |
+          docker build -t $DOCKER_USER/uj-app-backend .
+          docker push $DOCKER_USER/uj-app-backend
