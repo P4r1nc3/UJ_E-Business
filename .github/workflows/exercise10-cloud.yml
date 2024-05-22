@@ -40,6 +40,7 @@ jobs:
   deploy_backend:
     permissions:
       contents: none
+    needs: build_and_push
     runs-on: ubuntu-latest
     environment:
       name: 'Production backend'
@@ -54,9 +55,10 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_BACKEND }}
           images: ${{ env.DOCKER_USER }}/uj-app-backend:latest
 
-  deploy_front:
+  deploy_frontend:
     permissions:
       contents: none
+    needs: build_and_push
     runs-on: ubuntu-latest
     environment:
       name: 'Production frontend'
