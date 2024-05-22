@@ -29,7 +29,7 @@ function Products() {
 
     return (
         <div className="p-4">
-            <h2 className="text-2xl font-bold mb-6 text-center">Our Products</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center">Our Products test</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {products.map((product) => (
                     <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
