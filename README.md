@@ -137,7 +137,7 @@ Code:  [Link to pull request](https://github.com/P4r1nc3/UJ_E-Business/pull/6)
 
 Code:  [Link to pull request](https://github.com/P4r1nc3/UJ_E-Business/pull/9)
 
-**Exercise 9** Cloud
+**Exercise 10** Cloud
 
 :white_check_mark: 3.0 requirement 1
 
