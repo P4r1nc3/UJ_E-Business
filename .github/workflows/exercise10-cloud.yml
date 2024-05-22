@@ -73,3 +73,23 @@ jobs:
           app-name: uj-app-frontend
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
           images: ${{ env.DOCKER_USER }}/uj-app-frontend:latest
+
+  send_email:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v3.7.2
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Build finished
+          body: |
+            Deploy job of ${{ github.repository }} completed successfully!
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            Date: ${{ steps.deploy.outputs.timestamp }}
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: ${{ secrets.EMAIL_USERNAME }}
