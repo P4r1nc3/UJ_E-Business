@@ -2,7 +2,6 @@ name: Build and Deploy exercise10
 on:
   push:
     branches:
-      - master
       - exercise10-cloud
 
 permissions:
@@ -90,6 +89,5 @@ jobs:
             Deploy job of ${{ github.repository }} completed successfully!
             Commit: ${{ github.sha }}
             Author: ${{ github.actor }}
-            Date: ${{ steps.deploy.outputs.timestamp }}
           to: ${{ secrets.EMAIL_USERNAME }}
           from: ${{ secrets.EMAIL_USERNAME }}
